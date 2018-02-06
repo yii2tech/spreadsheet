@@ -5,7 +5,7 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace app\components\export;
+namespace yii2tech\excelgrid;
 
 use Closure;
 use yii\base\BaseObject;

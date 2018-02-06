@@ -5,8 +5,9 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace app\components\export;
+namespace yii2tech\excelgrid;
 
+use yii\helpers\FileHelper;
 use yii\i18n\Formatter;
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -285,6 +286,7 @@ class ExcelGrid extends Component
         if ($this->showFooter) {
             $this->renderFooter();
         }
+
         return $this;
     }
 
@@ -362,6 +364,8 @@ class ExcelGrid extends Component
      */
     public function save($filename)
     {
+        $filename = Yii::getAlias($filename);
+
         $writerType = $this->writerType;
         if ($writerType === null) {
             $fileExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
@@ -371,8 +375,12 @@ class ExcelGrid extends Component
                 $writerType = 'Excel5';
             }
         }
+
+        $fileDir = strtolower(pathinfo($filename, PATHINFO_DIRNAME));
+        FileHelper::createDirectory($fileDir);
+
         $objWriter = PHPExcel_IOFactory::createWriter($this->getDocument(), $writerType);
-        $objWriter->save(Yii::getAlias($filename));
+        $objWriter->save($filename);
     }
 
     /**
