@@ -1,14 +1,14 @@
 {
-    "name": "yii2tech/excel-grid",
+    "name": "yii2tech/spreadsheet",
     "description": "Yii2 extension for export to Excel",
     "keywords": ["yii2", "excel", "export", "xls"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yii2tech/excel-grid/issues",
+        "issues": "https://github.com/yii2tech/spreadsheet/issues",
         "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "https://github.com/yii2tech/excel-grid/wiki",
-        "source": "https://github.com/yii2tech/excel-grid"
+        "wiki": "https://github.com/yii2tech/spreadsheet/wiki",
+        "source": "https://github.com/yii2tech/spreadsheet"
     },
     "authors": [
         {
@@ -27,7 +27,7 @@
         }
     ],
     "autoload": {
-        "psr-4": { "yii2tech\\excelgrid\\": "src" }
+        "psr-4": { "yii2tech\\spreadsheet\\": "src" }
     },
     "extra": {
         "branch-alias": {

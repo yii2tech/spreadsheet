@@ -11,7 +11,7 @@ $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-Yii::setAlias('@yii2tech/tests/unit/excelgrid', __DIR__);
-Yii::setAlias('@yii2tech/excelgrid', dirname(__DIR__) . '/src');
+Yii::setAlias('@yii2tech/tests/unit/spreadsheet', __DIR__);
+Yii::setAlias('@yii2tech/spreadsheet', dirname(__DIR__) . '/src');
 
 require_once(__DIR__ . '/compatibility.php');

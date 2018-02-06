@@ -1,8 +1,8 @@
 <?php
 
-namespace yii2tech\tests\unit\excelgrid;
+namespace yii2tech\tests\unit\spreadsheet;
 
-use yii2tech\excelgrid\ExcelGrid;
+use yii2tech\spreadsheet\ExcelGrid;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\i18n\Formatter;

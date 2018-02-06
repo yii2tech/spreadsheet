@@ -1,6 +1,6 @@
 <?php
 
-namespace yii2tech\tests\unit\excelgrid;
+namespace yii2tech\tests\unit\spreadsheet;
 
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -72,7 +72,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function getTestFilePath()
     {
-        return Yii::getAlias('@runtime/excelgrid-test');
+        return Yii::getAlias('@runtime/spreadsheet-test');
     }
 
     /**
