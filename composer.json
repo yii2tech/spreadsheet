@@ -1,0 +1,37 @@
+{
+    "name": "yii2tech/excel-grid",
+    "description": "Yii2 extension for export to Excel",
+    "keywords": ["yii2", "excel", "export", "xls"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yii2tech/excel-grid/issues",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "https://github.com/yii2tech/excel-grid/wiki",
+        "source": "https://github.com/yii2tech/excel-grid"
+    },
+    "authors": [
+        {
+            "name": "Paul Klimov",
+            "email": "klimov.paul@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.13",
+        "phpoffice/phpexcel": "~1.8"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "yii2tech\\excelgrid\\": "src" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
