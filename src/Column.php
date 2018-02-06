@@ -11,7 +11,7 @@ use Closure;
 use yii\base\BaseObject;
 
 /**
- * Column is the base class of all [[ExcelGrid]] column classes.
+ * Column is the base class of all [[Spreadsheet]] column classes.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -19,7 +19,7 @@ use yii\base\BaseObject;
 class Column extends BaseObject
 {
     /**
-     * @var ExcelGrid the exporter object that owns this column.
+     * @var Spreadsheet the exporter object that owns this column.
      */
     public $grid;
     /**

@@ -14,7 +14,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 
 /**
- * DataColumn is the default column type for the [[ExcelGrid]] widget.
+ * DataColumn is the default column type for the [[Spreadsheet]].
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0

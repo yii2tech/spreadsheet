@@ -39,7 +39,7 @@ Usage
 -----
 
 This extension provides ability to export data to Excel file.
-Export is performed via [[\yii2tech\spreadsheet\CsvGrid]] instance, which provides interface similar to [[\yii\grid\GridView]] widget.
+Export is performed via [[\yii2tech\spreadsheet\Spreadsheet]] instance, which provides interface similar to [[\yii\grid\GridView]] widget.
 
 Example:
 

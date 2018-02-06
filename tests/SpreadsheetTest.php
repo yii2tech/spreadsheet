@@ -2,12 +2,12 @@
 
 namespace yii2tech\tests\unit\spreadsheet;
 
-use yii2tech\spreadsheet\ExcelGrid;
+use yii2tech\spreadsheet\Spreadsheet;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\i18n\Formatter;
 
-class ExcelGridTest extends TestCase
+class SpreadsheetTest extends TestCase
 {
     /**
      * Setup tables for test ActiveRecord
@@ -35,21 +35,21 @@ class ExcelGridTest extends TestCase
 
     /**
      * @param array $config Excel grid configuration.
-     * @return ExcelGrid Excel grid instance.
+     * @return Spreadsheet Excel grid instance.
      */
-    protected function createExcelGrid(array $config = [])
+    protected function createSpreadsheet(array $config = [])
     {
         if (!isset($config['dataProvider']) && !isset($config['query'])) {
             $config['dataProvider'] = new ArrayDataProvider();
         }
-        return new ExcelGrid($config);
+        return new Spreadsheet($config);
     }
 
     // Tests :
 
     public function testSetupFormatter()
     {
-        $grid = $this->createExcelGrid();
+        $grid = $this->createSpreadsheet();
 
         $formatter = new Formatter();
         $grid->setFormatter($formatter);
@@ -58,7 +58,7 @@ class ExcelGridTest extends TestCase
 
     public function testExport()
     {
-        $grid = $this->createExcelGrid([
+        $grid = $this->createSpreadsheet([
             'dataProvider' => new ArrayDataProvider([
                 'allModels' => [
                     [

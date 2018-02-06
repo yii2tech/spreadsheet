@@ -17,13 +17,13 @@ use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
 /**
- * ExcelGrid allows export of data provider into Excel document via [[PHPExcel]] library.
+ * Spreadsheet allows export of data provider into Excel document via [[PHPExcel]] library.
  * It provides interface, which is similar to [[\yii\grid\GridView]] widget.
  *
  * Example:
  *
  * ```php
- * $exporter = new ExcelGrid([
+ * $exporter = new Spreadsheet([
  *     'dataProvider' => new ArrayDataProvider([
  *         'allModels' => [
  *             [
@@ -62,7 +62,7 @@ use yii\di\Instance;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class ExcelGrid extends Component
+class Spreadsheet extends Component
 {
     /**
      * @var \yii\data\DataProviderInterface the data provider for the view. This property is required.
