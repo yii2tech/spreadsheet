@@ -1,7 +1,7 @@
 {
     "name": "yii2tech/spreadsheet",
     "description": "Yii2 extension for export to Excel",
-    "keywords": ["yii2", "excel", "export", "xls"],
+    "keywords": ["yii2", "spreadsheet", "excel", "libreoffice", "export", "xls", "xlsx"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
@@ -18,7 +18,7 @@
     ],
     "require": {
         "yiisoft/yii2": "~2.0.13",
-        "phpoffice/phpexcel": "~1.8"
+        "phpoffice/phpspreadsheet": "~1.1"
     },
     "repositories": [
         {

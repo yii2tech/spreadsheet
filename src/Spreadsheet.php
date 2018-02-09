@@ -7,17 +7,16 @@
 
 namespace yii2tech\spreadsheet;
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use yii\helpers\FileHelper;
 use yii\i18n\Formatter;
-use PHPExcel;
-use PHPExcel_IOFactory;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
 /**
- * Spreadsheet allows export of data provider into Excel document via [[PHPExcel]] library.
+ * Spreadsheet allows export of data provider into Excel document via [[\PhpOffice\PhpSpreadsheet\Spreadsheet]] library.
  * It provides interface, which is similar to [[\yii\grid\GridView]] widget.
  *
  * Example:
@@ -54,10 +53,11 @@ use yii\di\Instance;
  * $exporter->render()->save('/path/to/file.xls');
  * ```
  *
- * @see http://phpexcel.codeplex.com/documentation
- * @see PHPExcel
+ * @see https://phpspreadsheet.readthedocs.io/
+ * @see \PhpOffice\PhpSpreadsheet\Spreadsheet
  *
  * @property array|Formatter $formatter the formatter used to format model attribute values into displayable texts.
+ * @property \PhpOffice\PhpSpreadsheet\Spreadsheet $document spreadsheet document representation instance.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -116,7 +116,7 @@ class Spreadsheet extends Component
     protected $rowIndex;
 
     /**
-     * @var PHPExcel|null Excel document representation instance.
+     * @var \PhpOffice\PhpSpreadsheet\Spreadsheet|null spreadsheet document representation instance.
      */
     private $_document;
     /**
@@ -128,18 +128,18 @@ class Spreadsheet extends Component
 
 
     /**
-     * @return PHPExcel Excel document representation instance.
+     * @return \PhpOffice\PhpSpreadsheet\Spreadsheet spreadsheet document representation instance.
      */
     public function getDocument()
     {
         if (!is_object($this->_document)) {
-            $this->_document = new PHPExcel();
+            $this->_document = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         }
         return $this->_document;
     }
 
     /**
-     * @param PHPExcel|null $document Excel document representation instance.
+     * @param \PhpOffice\PhpSpreadsheet\Spreadsheet|null $document spreadsheet document representation instance.
      */
     public function setDocument($document)
     {
@@ -177,6 +177,7 @@ class Spreadsheet extends Component
         if (empty($this->columns)) {
             $this->guessColumns();
         }
+
         foreach ($this->columns as $i => $column) {
             if (is_string($column)) {
                 $column = $this->createDataColumn($column);
@@ -231,9 +232,10 @@ class Spreadsheet extends Component
     }
 
     /**
+     * Sets spreadsheet document properties.
      * @param array $properties list of document properties in format: name => value
-     * @return $this self reference
-     * @see \PHPExcel_DocumentProperties
+     * @return $this self reference.
+     * @see \PhpOffice\PhpSpreadsheet\Document\Properties
      */
     public function properties($properties)
     {
@@ -246,8 +248,8 @@ class Spreadsheet extends Component
     }
 
     /**
-     * @param \yii\data\DataProviderInterface $dataProvider the data provider for the document
-     * @return $this self reference
+     * @param \yii\data\DataProviderInterface $dataProvider the data provider for the document.
+     * @return $this self reference.
      */
     public function dataProvider($dataProvider)
     {
@@ -369,17 +371,13 @@ class Spreadsheet extends Component
         $writerType = $this->writerType;
         if ($writerType === null) {
             $fileExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-            if ($fileExtension === 'xlsx') {
-                $writerType = 'Excel2007';
-            } else {
-                $writerType = 'Excel5';
-            }
+            $writerType = ucfirst($fileExtension);
         }
 
         $fileDir = strtolower(pathinfo($filename, PATHINFO_DIRNAME));
         FileHelper::createDirectory($fileDir);
 
-        $objWriter = PHPExcel_IOFactory::createWriter($this->getDocument(), $writerType);
+        $objWriter = IOFactory::createWriter($this->getDocument(), $writerType);
         $objWriter->save($filename);
     }
 
@@ -401,7 +399,7 @@ class Spreadsheet extends Component
      */
     public function send($attachmentName, $options = [])
     {
-        $tempFileName = tempnam(Yii::getAlias('@runtime'), 'ExcelGridTemp_');
+        $tempFileName = tempnam(Yii::getAlias('@runtime'), 'SpreadsheetTemp_');
         $fileExtension = strtolower(pathinfo($attachmentName, PATHINFO_EXTENSION));
         if (!empty($fileExtension)) {
             $tempFileName .= '.' . $fileExtension;

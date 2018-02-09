@@ -42,13 +42,13 @@ class Column extends BaseObject
      */
     public $visible = true;
     /**
-     * @var array the column dimension options. Each option name will be converted into a 'setter' method of [[\PHPExcel_Worksheet_ColumnDimension]].
-     * @see \PHPExcel_Worksheet_ColumnDimension for details on how style configuration is processed.
+     * @var array the column dimension options. Each option name will be converted into a 'setter' method of [[\PhpOffice\PhpSpreadsheet\Worksheet\ColumnDimension]].
+     * @see \PhpOffice\PhpSpreadsheet\Worksheet\ColumnDimension for details on how style configuration is processed.
      */
     public $dimensionOptions = [];
     /**
      * @var array the style for the header cell.
-     * @see \PHPExcel_Style::applyFromArray() for details on how style configuration is processed.
+     * @see \PhpOffice\PhpSpreadsheet\Style\Style::applyFromArray() for details on how style configuration is processed.
      */
     public $headerOptions = [];
     /**
@@ -59,20 +59,20 @@ class Column extends BaseObject
      * and `$column` is a reference to the [[Column]] object.
      * A function may be used to assign different attributes to different rows based on the data in that row.
      *
-     * @see \PHPExcel_Style::applyFromArray() for details on how style configuration is processed.
-     * @see \PHPExcel_Style_Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
+     * @see \PhpOffice\PhpSpreadsheet\Style\Style::applyFromArray() for details on how style configuration is processed.
+     * @see PhpOffice\PhpSpreadsheet\Style\Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
      */
     public $contentOptions = [];
     /**
      * @var array the style for the footer cell.
-     * @see \PHPExcel_Style::applyFromArray() for details on how style configuration is processed.
-     * @see \PHPExcel_Style_Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
+     * @see \PhpOffice\PhpSpreadsheet\Style\Style::applyFromArray() for details on how style configuration is processed.
+     * @see PhpOffice\PhpSpreadsheet\Style\Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
      */
     public $footerOptions = [];
     /**
      * @var array the style for the filter cell.
-     * @see \PHPExcel_Style::applyFromArray() for details on how style configuration is processed.
-     * @see \PHPExcel_Style_Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
+     * @see \PhpOffice\PhpSpreadsheet\Style\Style::applyFromArray() for details on how style configuration is processed.
+     * @see \PhpOffice\PhpSpreadsheet\Style\Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
      */
     public $filterOptions = [];
 
@@ -158,16 +158,15 @@ class Column extends BaseObject
      * Renders the data cell content.
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
-     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data model among the models array returned by [[Spreadsheet::$dataProvider]].
      * @return string the rendering result
      */
     public function renderDataCellContent($model, $key, $index)
     {
-        if ($this->content !== null) {
-            return call_user_func($this->content, $model, $key, $index, $this);
-        } else {
+        if ($this->content === null) {
             return $this->grid->emptyCell;
         }
+        return call_user_func($this->content, $model, $key, $index, $this);
     }
 
     /**
@@ -185,7 +184,7 @@ class Column extends BaseObject
      * Applies cell style from configuration.
      * @param string $cell cell coordinates
      * @param array $style style configuration.
-     * @throws \PHPExcel_Exception on failure.
+     * @throws \PhpOffice\PhpSpreadsheet\Exception on failure.
      */
     protected function applyCellStyle($cell, $style)
     {

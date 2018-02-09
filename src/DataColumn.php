@@ -53,14 +53,13 @@ class DataColumn extends Column
     public $value;
     /**
      * @var string|array in which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
-     * `['date', 'php:Y-m-d']`). Supported formats are determined by the [[GridView::formatter|formatter]] used by
-     * the [[GridView]]. Default format is "text" which will format the value as an HTML-encoded plain text when
-     * [[\yii\i18n\Formatter]] is used as the [[GridView::$formatter|formatter]] of the GridView.
+     * `['date', 'php:Y-m-d']`). Supported formats are determined by the [[Spreadsheet::$formatter|formatter]] used by
+     * the [[Spreadsheet]]. Default format is "raw" which will display value as it is.
      */
-    public $format = 'text';
+    public $format = 'raw';
     /**
      * @var string|array|bool the HTML code representing a filter input (e.g. a text field, a dropdown list)
-     * that is used for this data column. This property is effective only when [[GridView::filterModel]] is set.
+     * that is used for this data column. This property is effective only when [[Spreadsheet::$filterModel]] is set.
      *
      * - If this property is not set, a text field will be generated as the filter input;
      * - If this property is an array, a dropdown list will be generated that uses this property value as
