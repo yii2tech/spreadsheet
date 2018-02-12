@@ -199,4 +199,50 @@ class SpreadsheetTest extends TestCase
 
         $this->assertTrue(file_exists($fileName));
     }
+
+    /**
+     * @depends testExport
+     */
+    public function testExportColumnUnions()
+    {
+        $grid = $this->createSpreadsheet([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [
+                    [
+                        'column1' => '1.1',
+                        'column2' => '1.2',
+                        'column3' => '1.3',
+                        'column4' => '1.4',
+                        'column5' => '1.5',
+                        'column6' => '1.6',
+                        'column7' => '1.7',
+                    ],
+                    [
+                        'column1' => '2.1',
+                        'column2' => '2.2',
+                        'column3' => '2.3',
+                        'column4' => '2.4',
+                        'column5' => '2.5',
+                        'column6' => '2.6',
+                        'column7' => '2.7',
+                    ],
+                ],
+            ]),
+            'headerColumnUnions' => [
+                [
+                    'header' => 'Skip 1 column and group 2 next',
+                    'offset' => 1,
+                    'length' => 2,
+                ],
+                [
+                    'header' => 'Skip 2 columns and group 2 next',
+                    'offset' => 2,
+                    'length' => 2,
+                ],
+            ],
+        ]);
+
+        $fileName = $this->getTestFilePath() . '/column-unions.xls';
+        $grid->save($fileName);
+    }
 }

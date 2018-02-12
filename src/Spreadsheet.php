@@ -113,6 +113,26 @@ class Spreadsheet extends Component
      * @see IOFactory
      */
     public $writerType;
+    /**
+     * @var array[] list of header column unions.
+     * For example:
+     *
+     * ```php
+     * [
+     *     [
+     *         'header' => 'Skip one column and group 3 next',
+     *         'offset' => 1,
+     *         'length' => 3,
+     *     ],
+     *     [
+     *         'header' => 'Skip two column and group 5 next',
+     *         'offset' => 2,
+     *         'length' => 5,
+     *     ],
+     * ]
+     * ```
+     */
+    public $headerColumnUnions = [];
 
     /**
      * @var int current sheet row index.
@@ -163,7 +183,7 @@ class Spreadsheet extends Component
             if ($this->_formatter === null) {
                 $this->_formatter = Yii::$app->getFormatter();
             } else {
-                $this->_formatter = Instance::ensure($this->_formatter, Formatter::className());
+                $this->_formatter = Instance::ensure($this->_formatter, Formatter::class);
             }
         }
         return $this->_formatter;
@@ -191,7 +211,7 @@ class Spreadsheet extends Component
                 $column = $this->createDataColumn($column);
             } elseif (is_array($column)) {
                 $column = Yii::createObject(array_merge([
-                    'class' => DataColumn::className(),
+                    'class' => DataColumn::class,
                     'grid' => $this,
                 ], $column));
             }
@@ -231,7 +251,7 @@ class Spreadsheet extends Component
         }
 
         return Yii::createObject([
-            'class' => DataColumn::className(),
+            'class' => DataColumn::class,
             'grid' => $this,
             'attribute' => $matches[1],
             'format' => isset($matches[3]) ? $matches[3] : 'text',
@@ -323,7 +343,9 @@ class Spreadsheet extends Component
         if ($this->showHeader) {
             $this->renderHeader();
         }
+
         $this->renderBody();
+
         if ($this->showFooter) {
             $this->renderFooter();
         }
@@ -359,12 +381,76 @@ class Spreadsheet extends Component
      */
     protected function renderHeader()
     {
+        if (empty($this->headerColumnUnions)) {
+            $columnIndex = 'A';
+            foreach ($this->columns as $column) {
+                /* @var $column Column */
+                $column->renderHeaderCell($columnIndex . $this->rowIndex);
+                $columnIndex++;
+            }
+            $this->rowIndex++;
+            return;
+        }
+
+        $sheet = $this->getDocument()->getActiveSheet();
+
+        $columns = $this->columns;
+
         $columnIndex = 'A';
-        foreach ($this->columns as $column) {
-            /* @var $column Column */
+        foreach ($this->headerColumnUnions as $columnUnion) {
+            if (isset($columnUnion['offset'])) {
+                $offset = (int)$columnUnion['offset'];
+                unset($columnUnion['offset']);
+            } else {
+                $offset = 0;
+            }
+
+            if (isset($columnUnion['length'])) {
+                $length = (int)$columnUnion['length'];
+                unset($columnUnion['length']);
+            } else {
+                $length = 1;
+            }
+
+            while ($offset > 0) {
+                /* @var $column Column */
+                $column = array_shift($columns);
+                $column->renderHeaderCell($columnIndex . $this->rowIndex);
+
+                $sheet->mergeCells($columnIndex . ($this->rowIndex) . ':' . $columnIndex . ($this->rowIndex + 1));
+                $columnIndex++;
+                $offset--;
+            }
+
+            $column = new Column($columnUnion);
+            $column->grid = $this;
             $column->renderHeaderCell($columnIndex . $this->rowIndex);
+
+            $startColumnIndex = $columnIndex;
+            while (true) {
+                /* @var $column Column */
+                $column = array_shift($columns);
+                $column->renderHeaderCell($columnIndex . ($this->rowIndex + 1));
+                $length--;
+                if (($length < 1)) {
+                    break;
+                }
+                $columnIndex++;
+            }
+
+            $sheet->mergeCells($startColumnIndex . $this->rowIndex . ':' . $columnIndex . $this->rowIndex);
+
             $columnIndex++;
         }
+
+        foreach ($columns as $column) {
+            /* @var $column Column */
+            $column->renderHeaderCell($columnIndex . $this->rowIndex);
+            $sheet->mergeCells($columnIndex . ($this->rowIndex) . ':' . $columnIndex . ($this->rowIndex + 1));
+            $columnIndex++;
+        }
+
+        $this->rowIndex++;
         $this->rowIndex++;
     }
 
