@@ -83,9 +83,7 @@ class Column extends BaseObject
      */
     public function renderHeaderCell($cell)
     {
-        $sheet = $this->grid->getDocument()->getActiveSheet();
-        $sheet->setCellValue($cell, $this->renderHeaderCellContent());
-        $this->applyCellStyle($cell, $this->headerOptions);
+        $this->grid->renderCell($cell, $this->renderHeaderCellContent(), $this->headerOptions);
     }
 
     /**
@@ -94,9 +92,7 @@ class Column extends BaseObject
      */
     public function renderFooterCell($cell)
     {
-        $sheet = $this->grid->getDocument()->getActiveSheet();
-        $sheet->setCellValue($cell, $this->renderFooterCellContent());
-        $this->applyCellStyle($cell, $this->footerOptions);
+        $this->grid->renderCell($cell, $this->renderFooterCellContent(), $this->footerOptions);
     }
 
     /**
@@ -108,15 +104,13 @@ class Column extends BaseObject
      */
     public function renderDataCell($cell, $model, $key, $index)
     {
-        $sheet = $this->grid->getDocument()->getActiveSheet();
-        $sheet->setCellValue($cell, $this->renderDataCellContent($model, $key, $index));
-
         if ($this->contentOptions instanceof Closure) {
             $style = call_user_func($this->contentOptions, $model, $key, $index, $this);
         } else {
             $style = $this->contentOptions;
         }
-        $this->applyCellStyle($cell, $style);
+
+        $this->grid->renderCell($cell, $this->renderDataCellContent($model, $key, $index), $style);
     }
 
     /**
@@ -125,11 +119,7 @@ class Column extends BaseObject
      */
     public function renderFilterCell($cell)
     {
-        $sheet = $this->grid->getDocument()->getActiveSheet();
-        $sheet->setCellValue($cell, $this->renderFilterCellContent());
-        if (!empty($this->filterOptions)) {
-            $sheet->getStyle($cell)->applyFromArray($this->filterOptions);
-        }
+        $this->grid->renderCell($cell, $this->renderFilterCellContent(), $this->filterOptions);
     }
 
     /**
@@ -178,26 +168,5 @@ class Column extends BaseObject
     public function renderFilterCellContent()
     {
         return $this->grid->emptyCell;
-    }
-
-    /**
-     * Applies cell style from configuration.
-     * @param string $cell cell coordinates
-     * @param array $style style configuration.
-     * @throws \PhpOffice\PhpSpreadsheet\Exception on failure.
-     */
-    protected function applyCellStyle($cell, $style)
-    {
-        if (!empty($style)) {
-            $cellStyle = $this->grid->getDocument()->getActiveSheet()->getStyle($cell);
-            if (isset($style['alignment'])) {
-                $cellStyle->getAlignment()->applyFromArray($style['alignment']);
-                unset($style['alignment']);
-                if (empty($style)) {
-                    return;
-                }
-            }
-            $cellStyle->applyFromArray($style);
-        }
     }
 }

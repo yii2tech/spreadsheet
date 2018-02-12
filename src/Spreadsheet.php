@@ -488,6 +488,59 @@ class Spreadsheet extends Component
     }
 
     /**
+     * Renders cell with given coordinates.
+     * @param string $cell cell coordinates, e.g. 'A1', 'B4' etc.
+     * @param string $content cell raw content.
+     * @param array $style cell style options.
+     * @return $this self reference.
+     */
+    public function renderCell($cell, $content, $style = [])
+    {
+        $sheet = $this->getDocument()->getActiveSheet();
+        $sheet->setCellValue($cell, $content);
+        $this->applyCellStyle($cell, $style);
+        return $this;
+    }
+
+    /**
+     * Applies cell style from configuration.
+     * @param string $cell cell coordinates, e.g. 'A1', 'B4' etc.
+     * @param array $style style configuration.
+     * @return $this self reference.
+     * @throws \PhpOffice\PhpSpreadsheet\Exception on failure.
+     */
+    public function applyCellStyle($cell, $style)
+    {
+        if (empty($style)) {
+            return $this;
+        }
+
+        $cellStyle = $this->getDocument()->getActiveSheet()->getStyle($cell);
+        if (isset($style['alignment'])) {
+            $cellStyle->getAlignment()->applyFromArray($style['alignment']);
+            unset($style['alignment']);
+            if (empty($style)) {
+                return $this;
+            }
+        }
+        $cellStyle->applyFromArray($style);
+
+        return $this;
+    }
+
+    /**
+     * Merges sell range into single one.
+     * @param string $cellRange cell range (e.g. 'A1:E1').
+     * @return $this self reference.
+     * @throws \PhpOffice\PhpSpreadsheet\Exception on failure.
+     */
+    public function mergeCells($cellRange)
+    {
+        $this->getDocument()->getActiveSheet()->mergeCells($cellRange);
+        return $this;
+    }
+
+    /**
      * Saves the document into a file.
      * @param string $filename name of the output file.
      */

@@ -245,4 +245,39 @@ class SpreadsheetTest extends TestCase
         $fileName = $this->getTestFilePath() . '/column-unions.xls';
         $grid->save($fileName);
     }
+
+    /**
+     * @depends testExport
+     */
+    public function testCustomCellRender()
+    {
+        $grid = $this->createSpreadsheet([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [
+                    [
+                        'id' => 1,
+                        'name' => 'first',
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'second',
+                    ],
+                ],
+            ])
+        ]);
+
+        $grid->renderCell('A4', 'Custom A4', [
+            'font' => [
+                'color' => [
+                    'rgb' => '#FF0000',
+                ],
+            ],
+        ]);
+        $grid->mergeCells('A4:B4');
+
+        $fileName = $this->getTestFilePath() . '/custom-render.xls';
+        $grid->save($fileName);
+
+        $this->assertTrue(file_exists($fileName));
+    }
 }
