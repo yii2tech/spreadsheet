@@ -73,8 +73,129 @@ class SpreadsheetTest extends TestCase
             ])
         ]);
 
-        $fileName = $this->getTestFilePath() . '/save.xls';
-        $grid->render()->save($fileName);
+        $fileName = $this->getTestFilePath() . '/basic.xls';
+        $grid->save($fileName);
+
+        $this->assertTrue(file_exists($fileName));
+    }
+
+    /**
+     * @depends testExport
+     */
+    public function testExportColumnOptions()
+    {
+        $grid = $this->createSpreadsheet([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [
+                    [
+                        'id' => 1,
+                        'name' => 'first',
+                        'number' => 10,
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'second',
+                        'number' => 20,
+                    ],
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'id',
+                    'dimensionOptions' => [
+                        'autoSize' => true
+                    ],
+                ],
+                [
+                    'attribute' => 'name',
+                    'headerOptions' => [
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED,
+                            ],
+                        ],
+                    ],
+                    'contentOptions' => [
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED,
+                            ],
+                        ],
+                        'alignment' => [
+                            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                        ],
+                    ],
+                ],
+                [
+                    'attribute' => 'number',
+                    'contentOptions' => [
+                        'font' => [
+                            'color' => [
+                                'rgb' => '#FF0000',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $fileName = $this->getTestFilePath() . '/column-options.xls';
+        $grid->save($fileName);
+
+        $this->assertTrue(file_exists($fileName));
+    }
+
+    /**
+     * @depends testExport
+     */
+    public function testExportMultipleSheets()
+    {
+        $grid = $this->createSpreadsheet([
+            'title' => 'items page 1',
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [
+                    [
+                        'id' => 1,
+                        'name' => 'first',
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'second',
+                    ],
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'id',
+                    'header' => 'ID',
+                ],
+                [
+                    'attribute' => 'name',
+                    'header' => 'Name',
+                ],
+            ],
+        ])
+        ->render()
+        ->configure([
+            'title' => 'items page 2',
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [
+                    [
+                        'id' => 3,
+                        'name' => 'third',
+                    ],
+                    [
+                        'id' => 4,
+                        'name' => 'fourth',
+                    ],
+                ],
+            ])
+        ])
+        ->render();
+
+        $fileName = $this->getTestFilePath() . '/multiple-sheet.xls';
+        $grid->save($fileName);
 
         $this->assertTrue(file_exists($fileName));
     }

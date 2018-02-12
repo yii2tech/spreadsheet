@@ -98,15 +98,19 @@ class Spreadsheet extends Component
      */
     public $nullDisplay = '';
     /**
-     * @var string writer type (format type). If not set will be determined automatically.
+     * @var string writer type (format type). If not set, it will be determined automatically.
      * Supported values:
      *
-     * - 'Excel5'
-     * - 'Excel2007'
-     * - 'OpenDocument'
-     * - 'CSV'
-     * - 'PDF'
-     * - 'HTML'
+     * - 'Xls'
+     * - 'Xlsx'
+     * - 'Ods'
+     * - 'Csv'
+     * - 'Html'
+     * - 'Tcpdf'
+     * - 'Dompdf'
+     * - 'Mpdf'
+     *
+     * @see IOFactory
      */
     public $writerType;
 
@@ -114,6 +118,10 @@ class Spreadsheet extends Component
      * @var int current sheet row index.
      */
     protected $rowIndex;
+    /**
+     * @var bool whether spreadsheet has been already rendered or not.
+     */
+    protected $isRendered = false;
 
     /**
      * @var \PhpOffice\PhpSpreadsheet\Spreadsheet|null spreadsheet document representation instance.
@@ -258,6 +266,37 @@ class Spreadsheet extends Component
     }
 
     /**
+     * Configures (re-configures) this spreadsheet with the property values.
+     * This method is useful for rendering multisheet documents. For example:
+     *
+     * ```php
+     * (new Spreadsheet([
+     *     'title' => 'Monitors',
+     *     'dataProvider' => $monitorDataProvider,
+     * ]))
+     * ->render()
+     * ->configure([
+     *     'title' => 'Mouses',
+     *     'dataProvider' => $mouseDataProvider,
+     * ])
+     * ->render()
+     * ->configure([
+     *     'title' => 'Keyboards',
+     *     'dataProvider' => $keyboardDataProvider,
+     * ])
+     * ->save('/path/to/export/files/office-equipment.xls');
+     * ```
+     *
+     * @param array $properties the property initial values given in terms of name-value pairs.
+     * @return $this self reference.
+     */
+    public function configure($properties)
+    {
+        Yii::configure($this, $properties);
+        return $this;
+    }
+
+    /**
      * Performs actual document composition.
      * @return $this self reference.
      */
@@ -288,6 +327,8 @@ class Spreadsheet extends Component
         if ($this->showFooter) {
             $this->renderFooter();
         }
+
+        $this->isRendered = true;
 
         return $this;
     }
@@ -366,6 +407,10 @@ class Spreadsheet extends Component
      */
     public function save($filename)
     {
+        if (!$this->isRendered) {
+            $this->render();
+        }
+
         $filename = Yii::getAlias($filename);
 
         $writerType = $this->writerType;
