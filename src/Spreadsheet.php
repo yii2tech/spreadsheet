@@ -655,8 +655,8 @@ class Spreadsheet extends Component
         $fileDir = strtolower(pathinfo($filename, PATHINFO_DIRNAME));
         FileHelper::createDirectory($fileDir);
 
-        $objWriter = IOFactory::createWriter($this->getDocument(), $writerType);
-        $objWriter->save($filename);
+        $writer = IOFactory::createWriter($this->getDocument(), $writerType);
+        $writer->save($filename);
     }
 
     /**
@@ -673,20 +673,29 @@ class Spreadsheet extends Component
      *  - `inline`: bool, whether the browser should open the file within the browser window. Defaults to false,
      *    meaning a download dialog will pop up.
      *
-     * @return \yii\web\Response the response object
+     * @return \yii\web\Response the response object.
      */
     public function send($attachmentName, $options = [])
     {
-        $tempFileName = tempnam(Yii::getAlias('@runtime'), 'SpreadsheetTemp_');
-        $fileExtension = strtolower(pathinfo($attachmentName, PATHINFO_EXTENSION));
-        if (!empty($fileExtension)) {
-            $tempFileName .= '.' . $fileExtension;
+        if (!$this->isRendered) {
+            $this->render();
         }
-        $this->save($tempFileName);
-        $content = file_get_contents($tempFileName);
-        $response = Yii::$app->getResponse()->sendContentAsFile($content, $attachmentName, $options);
-        unlink($tempFileName);
-        return $response;
+
+        $writerType = $this->writerType;
+        if ($writerType === null) {
+            $fileExtension = strtolower(pathinfo($attachmentName, PATHINFO_EXTENSION));
+            $writerType = ucfirst($fileExtension);
+        }
+
+        $tmpResource = tmpfile();
+        $tmpResourceMetaData = stream_get_meta_data($tmpResource);
+        $tmpFileName = $tmpResourceMetaData['uri'];
+
+        $writer = IOFactory::createWriter($this->getDocument(), $writerType);
+        $writer->save($tmpFileName);
+        unset($writer);
+
+        return Yii::$app->getResponse()->sendStreamAsFile($tmpResource, $attachmentName, $options);
     }
 
     /**
