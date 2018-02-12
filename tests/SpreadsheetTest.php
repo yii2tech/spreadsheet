@@ -77,6 +77,7 @@ class SpreadsheetTest extends TestCase
         $grid->save($fileName);
 
         $this->assertTrue(file_exists($fileName));
+        $this->assertSame(4, $grid->rowIndex);
     }
 
     /**
@@ -244,6 +245,9 @@ class SpreadsheetTest extends TestCase
 
         $fileName = $this->getTestFilePath() . '/column-unions.xls';
         $grid->save($fileName);
+
+        $this->assertTrue(file_exists($fileName));
+        $this->assertSame(5, $grid->rowIndex);
     }
 
     /**

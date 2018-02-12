@@ -133,11 +133,14 @@ class Spreadsheet extends Component
      * ```
      */
     public $headerColumnUnions = [];
-
     /**
-     * @var int current sheet row index.
+     * @var int|null current sheet row index.
+     * Value of this field automatically changes during spreadsheet rendering. After rendering is complete,
+     * it will contain the number of the row next to the latest fill-up one.
+     * Note: be careful while manually manipulating value of this field as it may cause unexpected results.
      */
-    protected $rowIndex;
+    public $rowIndex;
+
     /**
      * @var bool whether spreadsheet has been already rendered or not.
      */
@@ -326,7 +329,7 @@ class Spreadsheet extends Component
 
         $document = $this->getDocument();
 
-        if ($this->rowIndex !== null) {
+        if ($this->isRendered) {
             // second run
             $document->createSheet();
             $document->setActiveSheetIndex($document->getActiveSheetIndex() + 1);
