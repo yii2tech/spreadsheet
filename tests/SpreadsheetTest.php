@@ -2,6 +2,8 @@
 
 namespace yii2tech\tests\unit\spreadsheet;
 
+use yii\data\ActiveDataProvider;
+use yii\db\Query;
 use yii2tech\spreadsheet\SerialColumn;
 use yii2tech\spreadsheet\Spreadsheet;
 use Yii;
@@ -322,5 +324,51 @@ class SpreadsheetTest extends TestCase
 
         $this->assertTrue(file_exists($fileName));
         $this->assertSame(4, $grid->rowIndex);
+    }
+
+    /**
+     * @depends testExport
+     */
+    public function testExportQuery()
+    {
+        $this->setupTestDbData();
+
+        $query = (new Query())->from('Item');
+
+        $grid = $this->createSpreadsheet([
+            'query' => $query,
+            'batchSize' => 2
+        ]);
+
+        $fileName = $this->getTestFilePath() . '/query.xls';
+        $grid->save($fileName);
+
+        $this->assertTrue(file_exists($fileName));
+        $this->assertSame(5, $grid->rowIndex);
+    }
+
+    /**
+     * @depends testExport
+     */
+    public function testExportDataProviderIterate()
+    {
+        $this->setupTestDbData();
+
+        $query = (new Query())->from('Item');
+
+        $grid = $this->createSpreadsheet([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => $query,
+                'pagination' => [
+                    'pageSize' => 2
+                ],
+            ]),
+        ]);
+
+        $fileName = $this->getTestFilePath() . '/data-provider-iterator.xls';
+        $grid->save($fileName);
+
+        $this->assertTrue(file_exists($fileName));
+        $this->assertSame(5, $grid->rowIndex);
     }
 }

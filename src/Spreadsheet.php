@@ -8,6 +8,7 @@
 namespace yii2tech\spreadsheet;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use yii\data\ActiveDataProvider;
 use yii\helpers\FileHelper;
 use yii\i18n\Formatter;
 use Yii;
@@ -68,6 +69,16 @@ class Spreadsheet extends Component
      * @var \yii\data\DataProviderInterface the data provider for the view. This property is required.
      */
     public $dataProvider;
+    /**
+     * @var \yii\db\QueryInterface the data source query.
+     * Note: this field will be ignored in case [[dataProvider]] is set.
+     */
+    public $query;
+    /**
+     * @var int the number of records to be fetched in each batch.
+     * This property takes effect only in case of [[query]] usage.
+     */
+    public $batchSize = 100;
     /**
      * @var array|Column[]
      */
@@ -156,6 +167,10 @@ class Spreadsheet extends Component
      * instance. If this property is not set, the "formatter" application component will be used.
      */
     private $_formatter;
+    /**
+     * @var array|null internal iteration information.
+     */
+    private $batchInfo;
 
 
     /**
@@ -205,10 +220,6 @@ class Spreadsheet extends Component
      */
     protected function initColumns()
     {
-        if (empty($this->columns)) {
-            $this->guessColumns();
-        }
-
         foreach ($this->columns as $i => $column) {
             if (is_string($column)) {
                 $column = $this->createDataColumn($column);
@@ -229,11 +240,10 @@ class Spreadsheet extends Component
     /**
      * This function tries to guess the columns to show from the given data
      * if [[columns]] are not explicitly specified.
+     * @param \yii\base\Model|array $model model to be used for column information source.
      */
-    protected function guessColumns()
+    protected function guessColumns($model)
     {
-        $models = $this->dataProvider->getModels();
-        $model = reset($models);
         if (is_array($model) || is_object($model)) {
             foreach ($model as $name => $value) {
                 $this->columns[] = (string) $name;
@@ -279,16 +289,6 @@ class Spreadsheet extends Component
     }
 
     /**
-     * @param \yii\data\DataProviderInterface $dataProvider the data provider for the document.
-     * @return $this self reference.
-     */
-    public function dataProvider($dataProvider)
-    {
-        $this->dataProvider = $dataProvider;
-        return $this;
-    }
-
-    /**
      * Configures (re-configures) this spreadsheet with the property values.
      * This method is useful for rendering multisheet documents. For example:
      *
@@ -325,7 +325,16 @@ class Spreadsheet extends Component
      */
     public function render()
     {
-        $this->initColumns();
+        if ($this->dataProvider === null) {
+            if ($this->query !== null) {
+                $this->dataProvider = new ActiveDataProvider([
+                    'query' => $this->query,
+                    'pagination' => [
+                        'pageSize' => $this->batchSize,
+                    ],
+                ]);
+            }
+        }
 
         $document = $this->getDocument();
 
@@ -341,13 +350,28 @@ class Spreadsheet extends Component
 
         $this->rowIndex = 1;
 
-        $this->applyColumnOptions();
+        $columnsInitialized = false;
+        $modelIndex = 0;
+        while (($data = $this->batchModels()) !== false) {
+            list($models, $keys) = $data;
 
-        if ($this->showHeader) {
-            $this->renderHeader();
+            if (!$columnsInitialized) {
+                if (empty($this->columns)) {
+                    $this->guessColumns(reset($models));
+                }
+
+                $this->initColumns();
+                $this->applyColumnOptions();
+                $columnsInitialized = true;
+
+                if ($this->showHeader) {
+                    $this->renderHeader();
+                }
+            }
+
+            $this->renderBody($models, $keys, $modelIndex);
+            $this->gc();
         }
-
-        $this->renderBody();
 
         if ($this->showFooter) {
             $this->renderFooter();
@@ -359,23 +383,24 @@ class Spreadsheet extends Component
     }
 
     /**
-     * Applies column overall options, such as dimension options.
+     * Renders sheet table body batch.
+     * This method will be invoked several times, one per each model batch.
+     * @param array $models batch of models.
+     * @param array $keys batch of model keys.
+     * @param int $modelIndex model iteration index.
      */
-    protected function applyColumnOptions()
+    protected function renderBody($models, $keys, &$modelIndex)
     {
-        $sheet = $this->getDocument()->getActiveSheet();
-        $columnIndex = 'A';
-        foreach ($this->columns as $column) {
-            /* @var $column Column */
-            if (!empty($column->dimensionOptions)) {
-                $columnDimension = $sheet->getColumnDimension($columnIndex);
-                foreach ($column->dimensionOptions as $name => $value) {
-                    $method = 'set' . ucfirst($name);
-                    call_user_func([$columnDimension, $method], $value);
-                }
+        foreach ($models as $index => $model) {
+            $key = isset($keys[$index]) ? $keys[$index] : $index;
+            $columnIndex = 'A';
+            foreach ($this->columns as $column) {
+                /* @var $column Column */
+                $column->renderDataCell($columnIndex . $this->rowIndex, $model, $key, $modelIndex);
+                $columnIndex++;
             }
-
-            $columnIndex++;
+            $this->rowIndex++;
+            $modelIndex++;
         }
     }
 
@@ -472,22 +497,88 @@ class Spreadsheet extends Component
     }
 
     /**
-     * Renders sheet table body
+     * Applies column overall options, such as dimension options.
      */
-    protected function renderBody()
+    protected function applyColumnOptions()
     {
-        $models = array_values($this->dataProvider->getModels());
-        $keys = $this->dataProvider->getKeys();
-        foreach ($models as $index => $model) {
-            $key = $keys[$index];
-            $columnIndex = 'A';
-            foreach ($this->columns as $column) {
-                /* @var $column Column */
-                $column->renderDataCell($columnIndex . $this->rowIndex, $model, $key, $index);
-                $columnIndex++;
+        $sheet = $this->getDocument()->getActiveSheet();
+        $columnIndex = 'A';
+        foreach ($this->columns as $column) {
+            /* @var $column Column */
+            if (!empty($column->dimensionOptions)) {
+                $columnDimension = $sheet->getColumnDimension($columnIndex);
+                foreach ($column->dimensionOptions as $name => $value) {
+                    $method = 'set' . ucfirst($name);
+                    call_user_func([$columnDimension, $method], $value);
+                }
             }
-            $this->rowIndex++;
+
+            $columnIndex++;
         }
+    }
+
+    /**
+     * Iterates over [[query]] or [[dataProvider]] returning data by batches.
+     * @return array|false data batch: first element - models list, second model keys list.
+     */
+    protected function batchModels()
+    {
+        if ($this->batchInfo === null) {
+            if ($this->query !== null && method_exists($this->query, 'batch')) {
+                $this->batchInfo = [
+                    'queryIterator' => $this->query->batch($this->batchSize)
+                ];
+            } else {
+                $this->batchInfo = [
+                    'pagination' => $this->dataProvider->getPagination(),
+                    'page' => 0
+                ];
+            }
+        }
+
+        if (isset($this->batchInfo['queryIterator'])) {
+            /* @var $iterator \Iterator */
+            $iterator = $this->batchInfo['queryIterator'];
+            $iterator->next();
+
+            if ($iterator->valid()) {
+                return [$iterator->current(), []];
+            }
+
+            $this->batchInfo = null;
+            return false;
+        }
+
+        if (isset($this->batchInfo['pagination'])) {
+            /* @var $pagination \yii\data\Pagination|bool */
+            $pagination = $this->batchInfo['pagination'];
+            $page = $this->batchInfo['page'];
+
+            if ($pagination === false || $pagination->pageCount === 0) {
+                if ($page === 0) {
+                    $this->batchInfo['page']++;
+                    return [
+                        $this->dataProvider->getModels(),
+                        $this->dataProvider->getKeys()
+                    ];
+                }
+            } else {
+                if ($page < $pagination->pageCount) {
+                    $pagination->setPage($page);
+                    $this->dataProvider->prepare(true);
+                    $this->batchInfo['page']++;
+                    return [
+                        $this->dataProvider->getModels(),
+                        $this->dataProvider->getKeys()
+                    ];
+                }
+            }
+
+            $this->batchInfo = null;
+            return false;
+        }
+
+        return false;
     }
 
     /**
@@ -596,5 +687,16 @@ class Spreadsheet extends Component
         $response = Yii::$app->getResponse()->sendContentAsFile($content, $attachmentName, $options);
         unlink($tempFileName);
         return $response;
+    }
+
+    /**
+     * Performs PHP memory garbage collection.
+     */
+    protected function gc()
+    {
+        if (!gc_enabled()) {
+            gc_enable();
+        }
+        gc_collect_cycles();
     }
 }
