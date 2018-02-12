@@ -2,6 +2,7 @@
 
 namespace yii2tech\tests\unit\spreadsheet;
 
+use yii2tech\spreadsheet\SerialColumn;
 use yii2tech\spreadsheet\Spreadsheet;
 use Yii;
 use yii\data\ArrayDataProvider;
@@ -283,5 +284,43 @@ class SpreadsheetTest extends TestCase
         $grid->save($fileName);
 
         $this->assertTrue(file_exists($fileName));
+    }
+
+    /**
+     * @depends testExport
+     */
+    public function testExportSerialColumn()
+    {
+        $grid = $this->createSpreadsheet([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [
+                    [
+                        'id' => 1,
+                        'name' => 'first',
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'second',
+                    ],
+                ],
+            ]),
+            'columns' => [
+                [
+                    'class' => SerialColumn::class,
+                ],
+                [
+                    'attribute' => 'id',
+                ],
+                [
+                    'attribute' => 'name',
+                ],
+            ],
+        ]);
+
+        $fileName = $this->getTestFilePath() . '/serial-column.xls';
+        $grid->save($fileName);
+
+        $this->assertTrue(file_exists($fileName));
+        $this->assertSame(4, $grid->rowIndex);
     }
 }
