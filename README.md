@@ -205,7 +205,10 @@ $exporter->saveAs('/path/to/file.xls');
 You may union some columns in the sheet header into a groups. For example: you may have 2 different data columns:
 'Planned Revenue' and 'Actual Revenue'. In this case you may want to display them as single column 'Revenue', split
 into 2 sub columns: 'Planned' and 'Actual'.
-This can be achieved using [[\yii2tech\spreadsheet\Spreadsheet::$headerColumnUnions]]. For example:
+This can be achieved using [[\yii2tech\spreadsheet\Spreadsheet::$headerColumnUnions]]. Its each entry
+should specify 'offset', which determines the amount of columns to be skipped, and 'length', which determines
+the amount of columns to be united. Other options of the union are the same as for regular column.
+For example:
 
 ```php
 use yii2tech\spreadsheet\Spreadsheet;
@@ -247,6 +250,7 @@ $exporter = new Spreadsheet([
         ],
     ],
 ]);
+$exporter->saveAs('/path/to/file.xls');
 ```
 
 > Note: only single level of header column unions is supported. You will need to deal with more complex
@@ -310,6 +314,8 @@ $grid->renderCell('A4', 'Custom A4', [
 
 // merge footer cells :
 $grid->mergeCells('A4:B4');
+
+$exporter->saveAs('/path/to/file.xls');
 ```
 
 > Tip: you can use [[\yii2tech\spreadsheet\Spreadsheet::$rowIndex]] to get number of the row, which is next
