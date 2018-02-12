@@ -23,6 +23,9 @@ use yii\di\Instance;
  * Example:
  *
  * ```php
+ * use yii2tech\spreadsheet\Spreadsheet;
+ * use yii\data\ActiveDataProvider;
+ *
  * $exporter = new Spreadsheet([
  *     'dataProvider' => new ArrayDataProvider([
  *         'allModels' => [
@@ -51,7 +54,7 @@ use yii\di\Instance;
  *         ],
  *     ],
  * ]);
- * $exporter->render()->save('/path/to/file.xls');
+ * $exporter->save('/path/to/file.xls');
  * ```
  *
  * @see https://phpspreadsheet.readthedocs.io/

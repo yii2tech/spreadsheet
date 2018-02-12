@@ -271,7 +271,7 @@ class SpreadsheetTest extends TestCase
                     ],
                 ],
             ])
-        ]);
+        ])->render();
 
         $grid->renderCell('A4', 'Custom A4', [
             'font' => [
