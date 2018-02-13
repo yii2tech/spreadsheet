@@ -83,7 +83,22 @@ class Spreadsheet extends Component
      */
     public $batchSize = 100;
     /**
-     * @var array|Column[]
+     * @var array|Column[] spreadsheet column configuration. Each array element represents the configuration
+     * for one particular column. For example:
+     *
+     * ```php
+     * [
+     *     ['class' => SerialColumn::class],
+     *     [
+     *         'class' => DataColumn::class, // this line is optional
+     *         'attribute' => 'name',
+     *         'format' => 'text',
+     *         'header' => 'Name',
+     *     ],
+     * ]
+     * ```
+     *
+     * If a column is of class [[DataColumn]], the "class" element can be omitted.
      */
     public $columns = [];
     /**
@@ -196,7 +211,7 @@ class Spreadsheet extends Component
     }
 
     /**
-     * @return Formatter formatter instance
+     * @return Formatter formatter instance.
      */
     public function getFormatter()
     {
@@ -211,7 +226,7 @@ class Spreadsheet extends Component
     }
 
     /**
-     * @param array|Formatter $formatter
+     * @param array|Formatter $formatter formatter instance.
      */
     public function setFormatter($formatter)
     {
