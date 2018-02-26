@@ -40,7 +40,7 @@ Usage
 
 This extension provides ability to export data to a spreadsheet, e.g. Excel, LibreOffice etc.
 It is powered by [phpoffice/phpspreadsheet](https://github.com/PHPOffice/PhpSpreadsheet) library.
-Export is performed via [[\yii2tech\spreadsheet\Spreadsheet]] instance, which provides interface similar to [[\yii\grid\GridView]] widget.
+Export is performed via [[\yii2tech\spreadsheet\Spreadsheet]] instance, which provides interface similar to [[\yii\grid\GridView]] widget. 
 
 Example:
 
@@ -78,6 +78,7 @@ $exporter = new Spreadsheet([
 ]);
 $exporter->save('/path/to/file.xls');
 ```
+> Note that even the similarity with gridview, columns methods signature is not the same. If you need a custom column you can extend [[yii2tech\spreadsheet\Column]]
 
 While running web application you can use [[\yii2tech\spreadsheet\Spreadsheet::send()]] method to send a result file to
 the browser through download dialog:
