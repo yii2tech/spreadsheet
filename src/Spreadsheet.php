@@ -706,6 +706,9 @@ class Spreadsheet extends Component
         }
 
         $tmpResource = tmpfile();
+        if($tmpResource === false)
+            throw new Exception('Temporary file could not be created');
+        
         $tmpResourceMetaData = stream_get_meta_data($tmpResource);
         $tmpFileName = $tmpResourceMetaData['uri'];
 
