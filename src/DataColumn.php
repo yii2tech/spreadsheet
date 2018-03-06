@@ -117,7 +117,7 @@ class DataColumn extends Column
      * Returns the data cell value.
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
-     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data model among the models array returned by [[Spreadsheet::$dataProvider]].
      * @return string the data cell value
      */
     public function getDataCellValue($model, $key, $index)

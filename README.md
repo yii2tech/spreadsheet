@@ -79,6 +79,8 @@ $exporter = new Spreadsheet([
 $exporter->save('/path/to/file.xls');
 ```
 
+Please, refer to [[\yii2tech\spreadsheet\Column]] class for the information about column properties and configuration specifications.
+
 While running web application you can use [[\yii2tech\spreadsheet\Spreadsheet::send()]] method to send a result file to
 the browser through download dialog:
 

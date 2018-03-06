@@ -60,13 +60,13 @@ class Column extends BaseObject
      * A function may be used to assign different attributes to different rows based on the data in that row.
      *
      * @see \PhpOffice\PhpSpreadsheet\Style\Style::applyFromArray() for details on how style configuration is processed.
-     * @see PhpOffice\PhpSpreadsheet\Style\Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
+     * @see \PhpOffice\PhpSpreadsheet\Style\Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
      */
     public $contentOptions = [];
     /**
      * @var array the style for the footer cell.
      * @see \PhpOffice\PhpSpreadsheet\Style\Style::applyFromArray() for details on how style configuration is processed.
-     * @see PhpOffice\PhpSpreadsheet\Style\Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
+     * @see \PhpOffice\PhpSpreadsheet\Style\Alignment::applyFromArray() for details on how 'alignment' configuration is processed.
      */
     public $footerOptions = [];
     /**

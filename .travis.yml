@@ -20,5 +20,5 @@ install:
   - travis_retry composer install --prefer-dist --no-interaction
 
 script:
-  - phpunit --verbose $PHPUNIT_FLAGS
+  - phpunit $PHPUNIT_FLAGS
 
