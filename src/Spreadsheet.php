@@ -285,7 +285,7 @@ class Spreadsheet extends Component
             'class' => DataColumn::class,
             'grid' => $this,
             'attribute' => $matches[1],
-            'format' => isset($matches[3]) ? $matches[3] : 'text',
+            'format' => isset($matches[3]) ? $matches[3] : 'raw',
             'label' => isset($matches[5]) ? $matches[5] : null,
         ]);
     }

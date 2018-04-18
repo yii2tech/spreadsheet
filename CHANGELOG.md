@@ -5,6 +5,7 @@ Yii 2 Spreadsheet Data Export extension Change Log
 -----------------------
 
 - Bug #4: Fixed `Spreadsheet::save()` forces directory name to lowercase (klimov-paul)
+- Bug #5: Fixed `Spreadsheet::createDataColumn()` sets column format to 'text' instead of 'raw' (klimov-paul)
 
 
 1.0.1, April 9, 2018
