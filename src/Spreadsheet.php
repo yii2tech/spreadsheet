@@ -670,7 +670,7 @@ class Spreadsheet extends Component
             $writerType = ucfirst($fileExtension);
         }
 
-        $fileDir = strtolower(pathinfo($filename, PATHINFO_DIRNAME));
+        $fileDir = pathinfo($filename, PATHINFO_DIRNAME);
         FileHelper::createDirectory($fileDir);
 
         $writer = IOFactory::createWriter($this->getDocument(), $writerType);

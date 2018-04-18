@@ -1,6 +1,12 @@
 Yii 2 Spreadsheet Data Export extension Change Log
 ==================================================
 
+1.0.2 under development
+-----------------------
+
+- Bug #4: Fixed `Spreadsheet::save()` forces directory name to lowercase (klimov-paul)
+
+
 1.0.1, April 9, 2018
 --------------------
 
