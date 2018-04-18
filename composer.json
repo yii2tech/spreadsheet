@@ -1,6 +1,6 @@
 {
     "name": "yii2tech/spreadsheet",
-    "description": "Yii2 extension for export to Excel",
+    "description": "Yii2 extension for export to a spreadsheet, e.g. Excel, LibreOffice etc.",
     "keywords": ["yii2", "spreadsheet", "excel", "libreoffice", "export", "xls", "xlsx"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
