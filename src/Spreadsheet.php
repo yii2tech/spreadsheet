@@ -15,6 +15,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
+use yii\web\Response;
 
 /**
  * Spreadsheet allows export of data provider into Excel document via [[\PhpOffice\PhpSpreadsheet\Spreadsheet]] library.
@@ -717,7 +718,18 @@ class Spreadsheet extends Component
         $writer->save($tmpFileName);
         unset($writer);
 
-        return Yii::$app->getResponse()->sendStreamAsFile($tmpResource, $attachmentName, $options);
+        $tmpFileStatistics = fstat($tmpResource);
+        if ($tmpFileStatistics['size'] > 0) {
+            return Yii::$app->getResponse()->sendStreamAsFile($tmpResource, $attachmentName, $options);
+        }
+
+        // some writers, like 'Xlsx', may delete target file during the process, making temporary file resource invalid
+        $response = Yii::$app->getResponse();
+        $response->on(Response::EVENT_AFTER_SEND, function() use ($tmpResource) {
+            // with temporary file resource closing file matching its URI will be deleted, even if resource is invalid
+            fclose($tmpResource);
+        });
+        return $response->sendFile($tmpFileName, $attachmentName, $options);
     }
 
     /**
