@@ -1,7 +1,7 @@
 Yii 2 Spreadsheet Data Export extension Change Log
 ==================================================
 
-1.0.3 under development
+1.0.3, January 24, 2019
 -----------------------
 
 - Bug #11: Fixed `Spreadsheet::send()` fails for 'Xlsx' writer (klimov-paul)
