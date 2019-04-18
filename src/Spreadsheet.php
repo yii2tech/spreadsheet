@@ -367,7 +367,7 @@ class Spreadsheet extends Component
             $document->getActiveSheet()->setTitle($this->title);
         }
 
-        $this->rowIndex = 1;
+        $this->rowIndex = (isset($this->rowIndex) ? $this->rowIndex : 1);
 
         $columnsInitialized = false;
         $modelIndex = 0;
