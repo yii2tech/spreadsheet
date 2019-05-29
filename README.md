@@ -174,12 +174,12 @@ $exporter = new Spreadsheet([
         ],
     ]),
 ]);
-$exporter->saveAs('/path/to/file.xls');
+$exporter->save('/path/to/file.xls');
 ```
 
 > Note: if you disable pagination in your data provider - no batch processing will be performed.
 
-In case of [[\yii\db\QueryInterface]] usage, `Spreadsheet` will attempt to use `batch()` method, if it present in the query
+In case of [[\yii\db\QueryInterface]] usage, `Spreadsheet` will attempt to use `batch()` method, if it is present in the query
 class (for example in case [[\yii\db\Query]] or [[\yii\db\ActiveQuery]] usage). If `batch()` method is not available -
 [[yii\data\ActiveDataProvider]] instance will be automatically created around given query.
 You can control batch size via [[\yii2tech\spreadsheet\Spreadsheet::$batchSize]]:
@@ -192,7 +192,7 @@ $exporter = new Spreadsheet([
     'query' => Item::find(),
     'batchSize' => 200, // export batch size
 ]);
-$exporter->saveAs('/path/to/file.xls');
+$exporter->save('/path/to/file.xls');
 ```
 
 > Note: despite batch data processing reduces amount of resources needed for spreadsheet file generation,
@@ -205,7 +205,7 @@ $exporter->saveAs('/path/to/file.xls');
 ## Complex headers <span id="complex-headers"></span>
 
 You may union some columns in the sheet header into a groups. For example: you may have 2 different data columns:
-'Planned Revenue' and 'Actual Revenue'. In this case you may want to display them as single column 'Revenue', split
+'Planned Revenue' and 'Actual Revenue'. In this case you may want to display them as a single column 'Revenue', split
 into 2 sub columns: 'Planned' and 'Actual'.
 This can be achieved using [[\yii2tech\spreadsheet\Spreadsheet::$headerColumnUnions]]. Its each entry
 should specify 'offset', which determines the amount of columns to be skipped, and 'length', which determines
@@ -252,7 +252,7 @@ $exporter = new Spreadsheet([
         ],
     ],
 ]);
-$exporter->saveAs('/path/to/file.xls');
+$exporter->save('/path/to/file.xls');
 ```
 
 > Note: only single level of header column unions is supported. You will need to deal with more complex
@@ -303,10 +303,10 @@ $exporter = new Spreadsheet([
 ])->render(); // render the document
 
 // override serial column header :
-$grid->renderCell('A1', 'Overridden serial column header');
+$exporter->renderCell('A1', 'Overridden serial column header');
 
 // add custom footer :
-$grid->renderCell('A4', 'Custom A4', [
+$exporter->renderCell('A4', 'Custom A4', [
     'font' => [
         'color' => [
             'rgb' => '#FF0000',
@@ -315,9 +315,9 @@ $grid->renderCell('A4', 'Custom A4', [
 ]);
 
 // merge footer cells :
-$grid->mergeCells('A4:B4');
+$exporter->mergeCells('A4:B4');
 
-$exporter->saveAs('/path/to/file.xls');
+$exporter->save('/path/to/file.xls');
 ```
 
 > Tip: you can use [[\yii2tech\spreadsheet\Spreadsheet::$rowIndex]] to get number of the row, which is next
