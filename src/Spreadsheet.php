@@ -170,6 +170,12 @@ class Spreadsheet extends Component
      * Note: be careful while manually manipulating value of this field as it may cause unexpected results.
      */
     public $rowIndex;
+    /**
+     * @var int index of the sheet row, from which rendering should start.
+     * This field can be used to skip some lines at the sheet beginning for the further manual fill up.
+     * @since 1.0.4
+     */
+    public $startRowIndex = 1;
 
     /**
      * @var bool whether spreadsheet has been already rendered or not.
@@ -367,7 +373,7 @@ class Spreadsheet extends Component
             $document->getActiveSheet()->setTitle($this->title);
         }
 
-        $this->rowIndex = 1;
+        $this->rowIndex = $this->startRowIndex;
 
         $columnsInitialized = false;
         $modelIndex = 0;

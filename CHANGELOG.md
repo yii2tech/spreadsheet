@@ -1,6 +1,12 @@
 Yii 2 Spreadsheet Data Export extension Change Log
 ==================================================
 
+1.0.4 under development
+-----------------------
+
+- Enh #21: Added `Spreadsheet::$startRowIndex` allowing to skip lines at the sheet document beginning (klimov-paul)
+
+
 1.0.3, January 24, 2019
 -----------------------
 
