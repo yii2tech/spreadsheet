@@ -10,7 +10,7 @@ namespace yii2tech\spreadsheet;
 /**
  * SerialColumn displays a column of row numbers (1-based).
  *
- * To add a SerialColumn to the [[Spreadsheet]], add it to the [[Spreadsheet::$columns|columns]] configuration as follows:
+ * To add a SerialColumn to the {@see Spreadsheet}, add it to the {@see Spreadsheet::$columns} configuration as follows:
  *
  * ```php
  * 'columns' => [

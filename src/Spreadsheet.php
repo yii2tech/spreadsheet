@@ -18,8 +18,8 @@ use yii\di\Instance;
 use yii\web\Response;
 
 /**
- * Spreadsheet allows export of data provider into Excel document via [[\PhpOffice\PhpSpreadsheet\Spreadsheet]] library.
- * It provides interface, which is similar to [[\yii\grid\GridView]] widget.
+ * Spreadsheet allows export of data provider into Excel document via {@see \PhpOffice\PhpSpreadsheet\Spreadsheet} library.
+ * It provides interface, which is similar to {@see \yii\grid\GridView} widget.
  *
  * Example:
  *
@@ -75,12 +75,12 @@ class Spreadsheet extends Component
     public $dataProvider;
     /**
      * @var \yii\db\QueryInterface the data source query.
-     * Note: this field will be ignored in case [[dataProvider]] is set.
+     * Note: this field will be ignored in case {@see dataProvider} is set.
      */
     public $query;
     /**
      * @var int the number of records to be fetched in each batch.
-     * This property takes effect only in case of [[query]] usage.
+     * This property takes effect only in case of {@see query} usage.
      */
     public $batchSize = 100;
     /**
@@ -99,7 +99,7 @@ class Spreadsheet extends Component
      * ]
      * ```
      *
-     * If a column is of class [[DataColumn]], the "class" element can be omitted.
+     * If a column is of class {@see DataColumn}, the "class" element can be omitted.
      */
     public $columns = [];
     /**
@@ -119,8 +119,8 @@ class Spreadsheet extends Component
      * This property is used to render cells that have no defined content,
      * e.g. empty footer or filter cells.
      *
-     * Note that this is not used by the [[DataColumn]] if a data item is `null`. In that case
-     * the [[nullDisplay]] property will be used to indicate an empty data value.
+     * Note that this is not used by the {@see DataColumn} if a data item is `null`. In that case
+     * the {@see nullDisplay} property will be used to indicate an empty data value.
      */
     public $emptyCell = '';
     /**
@@ -188,7 +188,7 @@ class Spreadsheet extends Component
     private $_document;
     /**
      * @var array|Formatter the formatter used to format model attribute values into displayable texts.
-     * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
+     * This can be either an instance of {@see Formatter} or an configuration array for creating the {@see Formatter}
      * instance. If this property is not set, the "formatter" application component will be used.
      */
     private $_formatter;
@@ -264,7 +264,7 @@ class Spreadsheet extends Component
 
     /**
      * This function tries to guess the columns to show from the given data
-     * if [[columns]] are not explicitly specified.
+     * if {@see columns} are not explicitly specified.
      * @param \yii\base\Model|array $model model to be used for column information source.
      */
     protected function guessColumns($model)
@@ -277,7 +277,7 @@ class Spreadsheet extends Component
     }
 
     /**
-     * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:label".
+     * Creates a {@see DataColumn} object based on a string in the format of "attribute:format:label".
      * @param string $text the column specification string
      * @return DataColumn the column instance
      * @throws InvalidConfigException if the column specification is invalid
@@ -543,7 +543,7 @@ class Spreadsheet extends Component
     }
 
     /**
-     * Iterates over [[query]] or [[dataProvider]] returning data by batches.
+     * Iterates over {@see query} or {@see dataProvider} returning data by batches.
      * @return array|false data batch: first element - models list, second model keys list.
      */
     protected function batchModels()
@@ -688,7 +688,7 @@ class Spreadsheet extends Component
      * Sends the rendered content as a file to the browser.
      *
      * Note that this method only prepares the response for file sending. The file is not sent
-     * until [[\yii\web\Response::send()]] is called explicitly or implicitly.
+     * until {@see \yii\web\Response::send()} is called explicitly or implicitly.
      * The latter is done after you return from a controller action.
      *
      * @param string $attachmentName the file name shown to the user.

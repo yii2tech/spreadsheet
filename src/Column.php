@@ -11,7 +11,7 @@ use Closure;
 use yii\base\BaseObject;
 
 /**
- * Column is the base class of all [[Spreadsheet]] column classes.
+ * Column is the base class of all {@see Spreadsheet}} column classes.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -34,7 +34,7 @@ class Column extends BaseObject
      * @var callable This is a callable that will be used to generate the content of each cell.
      * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
      * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
-     * and `$column` is a reference to the [[Column]] object.
+     * and `$column` is a reference to the {@see Column} object.
      */
     public $content;
     /**
@@ -42,7 +42,7 @@ class Column extends BaseObject
      */
     public $visible = true;
     /**
-     * @var array the column dimension options. Each option name will be converted into a 'setter' method of [[\PhpOffice\PhpSpreadsheet\Worksheet\ColumnDimension]].
+     * @var array the column dimension options. Each option name will be converted into a 'setter' method of {@see \PhpOffice\PhpSpreadsheet\Worksheet\ColumnDimension}.
      * @see \PhpOffice\PhpSpreadsheet\Worksheet\ColumnDimension for details on how style configuration is processed.
      */
     public $dimensionOptions = [];
@@ -53,10 +53,10 @@ class Column extends BaseObject
     public $headerOptions = [];
     /**
      * @var array|\Closure the style for the data cell This can either be an array of style
-     * configuration or an anonymous function ([[Closure]]) that returns such an array.
+     * configuration or an anonymous function ({@see Closure}) that returns such an array.
      * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
      * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
-     * and `$column` is a reference to the [[Column]] object.
+     * and `$column` is a reference to the {@see Column} object.
      * A function may be used to assign different attributes to different rows based on the data in that row.
      *
      * @see \PhpOffice\PhpSpreadsheet\Style\Style::applyFromArray() for details on how style configuration is processed.
@@ -100,7 +100,7 @@ class Column extends BaseObject
      * @param string $cell cell coordinates.
      * @param mixed $model the data model being rendered
      * @param mixed $key the key associated with the data model
-     * @param int $index the zero-based index of the data item among the item array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data item among the item array returned by {@see GridView::dataProvider}.
      */
     public function renderDataCell($cell, $model, $key, $index)
     {
@@ -124,7 +124,7 @@ class Column extends BaseObject
 
     /**
      * Renders the header cell content.
-     * The default implementation simply renders [[header]].
+     * The default implementation simply renders {@see Column::$header}.
      * This method may be overridden to customize the rendering of the header cell.
      * @return string the rendering result
      */
@@ -135,7 +135,7 @@ class Column extends BaseObject
 
     /**
      * Renders the footer cell content.
-     * The default implementation simply renders [[footer]].
+     * The default implementation simply renders {@see Column::$footer}.
      * This method may be overridden to customize the rendering of the footer cell.
      * @return string the rendering result
      */
@@ -148,7 +148,7 @@ class Column extends BaseObject
      * Renders the data cell content.
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
-     * @param int $index the zero-based index of the data model among the models array returned by [[Spreadsheet::$dataProvider]].
+     * @param int $index the zero-based index of the data model among the models array returned by {@see Spreadsheet::$dataProvider}.
      * @return string the rendering result
      */
     public function renderDataCellContent($model, $key, $index)
