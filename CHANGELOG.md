@@ -1,8 +1,8 @@
 Yii 2 Spreadsheet Data Export extension Change Log
 ==================================================
 
-1.0.5 Under Development
------------------------
+1.0.5, September 12, 2019
+-------------------------
 
 - Enh #23: Added `Spreadsheet::$writerCreator` allowing setup of custom spreadsheet writer (klimov-paul)
 
