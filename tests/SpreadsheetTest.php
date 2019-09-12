@@ -2,6 +2,7 @@
 
 namespace yii2tech\tests\unit\spreadsheet;
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
 use yii2tech\spreadsheet\DataColumn;
@@ -417,5 +418,36 @@ class SpreadsheetTest extends TestCase
 
         $this->assertTrue(file_exists($fileName));
         $this->assertSame(5, $grid->rowIndex);
+    }
+
+    /**
+     * @depends testExport
+     */
+    public function testWriterCreator()
+    {
+        $grid = $this->createSpreadsheet([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [
+                    [
+                        'id' => 1,
+                        'name' => 'first',
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'second',
+                    ],
+                ],
+            ]),
+            'writerCreator' => function ($spreadsheet, $writerType) {
+                return IOFactory::createWriter($spreadsheet, 'Csv');
+            }
+        ]);
+
+        $fileName = $this->getTestFilePath() . '/basic.xls';
+        $grid->save($fileName);
+
+        $fileContent = file_get_contents($fileName);
+        $rows = str_getcsv($fileContent);
+        $this->assertNotEmpty($rows);
     }
 }

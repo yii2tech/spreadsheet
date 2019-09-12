@@ -144,6 +144,13 @@ class Spreadsheet extends Component
      */
     public $writerType;
     /**
+     * @var callable|null a PHP callback, which should create spreadsheet writer instance.
+     * The signature of this callback should be following: `function(\PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet, string $writerType): \PhpOffice\PhpSpreadsheet\Writer\IWriter`
+     * @see \PhpOffice\PhpSpreadsheet\Writer\IWriter
+     * @since 1.0.5
+     */
+    public $writerCreator;
+    /**
      * @var array[] list of header column unions.
      * For example:
      *
@@ -680,7 +687,7 @@ class Spreadsheet extends Component
         $fileDir = pathinfo($filename, PATHINFO_DIRNAME);
         FileHelper::createDirectory($fileDir);
 
-        $writer = IOFactory::createWriter($this->getDocument(), $writerType);
+        $writer = $this->createWriter($writerType);
         $writer->save($filename);
     }
 
@@ -720,7 +727,7 @@ class Spreadsheet extends Component
         $tmpResourceMetaData = stream_get_meta_data($tmpResource);
         $tmpFileName = $tmpResourceMetaData['uri'];
 
-        $writer = IOFactory::createWriter($this->getDocument(), $writerType);
+        $writer = $this->createWriter($writerType);
         $writer->save($tmpFileName);
         unset($writer);
 
@@ -735,6 +742,7 @@ class Spreadsheet extends Component
             // with temporary file resource closing file matching its URI will be deleted, even if resource is invalid
             fclose($tmpResource);
         });
+
         return $response->sendFile($tmpFileName, $attachmentName, $options);
     }
 
@@ -747,5 +755,20 @@ class Spreadsheet extends Component
             gc_enable();
         }
         gc_collect_cycles();
+    }
+
+    /**
+     * Creates a spreadsheet writer for the given type.
+     * @param string $writerType spreadsheet writer type.
+     * @return \PhpOffice\PhpSpreadsheet\Writer\IWriter
+     * @since 1.0.5
+     */
+    protected function createWriter($writerType)
+    {
+        if ($this->writerCreator === null) {
+            return IOFactory::createWriter($this->getDocument(), $writerType);
+        }
+
+        return call_user_func($this->writerCreator, $this->getDocument(), $writerType);
     }
 }
